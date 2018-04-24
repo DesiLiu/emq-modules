@@ -43,6 +43,7 @@ on_client_connected(ConnAck, Client = #mqtt_client{client_id  = ClientId,
                                  {connack, ConnAck},
                                  {ts, emqttd_time:now_secs()}]),
     Msg = message(qos(Env), topic(connected, ClientId), Payload),
+    emqttd_message::set_flag(retain,Msg),
     emqttd:publish(emqttd_message:set_flag(sys, Msg)),
     {ok, Client}.
 
@@ -53,6 +54,7 @@ on_client_disconnected(Reason, #mqtt_client{client_id = ClientId,
                                  {reason, reason(Reason)},
                                  {ts, emqttd_time:now_secs()}]),
     Msg = message(qos(Env), topic(disconnected, ClientId), Payload),
+    emqttd_message::set_flag(retain,Msg),
     emqttd:publish(emqttd_message:set_flag(sys, Msg)), ok.
 
 unload(_Env) ->
